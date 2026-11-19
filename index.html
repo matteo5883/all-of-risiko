@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Risiko – Il libro mastro</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap">
+<style>
+:root{--bg:#e6eeec;--surf:#f8fbfa;--ink:#12222c;--mut:#5d7078;--line:#c9d8d5;--sea:#0e2a3b;--red:#c8372d;--brass:#c79a2e;--on-sea:#eaf3f1;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1820;--surf:#122632;--ink:#e6eeec;--mut:#8ea6ae;--line:#24404d;--sea:#06121a}}
+:root[data-theme="dark"]{--bg:#0a1820;--surf:#122632;--ink:#e6eeec;--mut:#8ea6ae;--line:#24404d;--sea:#06121a}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Bricolage Grotesque",system-ui,sans-serif}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+.top{background:var(--sea);color:var(--on-sea);padding:18px 20px 0}
+.wrap{max-width:1000px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:14px}
+.brand h1{margin:0;font-size:2.1rem;font-weight:800;letter-spacing:.02em;line-height:1}
+.brand p{margin:2px 0 0;color:#9fb8bd;font-size:.95rem}
+.tabs{display:flex;gap:4px;margin-top:16px;overflow-x:auto}
+.tabs button{background:none;border:0;border-bottom:4px solid transparent;color:#9fb8bd;padding:10px 16px;font-weight:600}
+.tabs button.on{color:#fff;border-color:var(--brass)}
+main{max-width:1000px;margin:0 auto;padding:20px 16px 48px}
+.hero{background:var(--sea);color:var(--on-sea);border-radius:18px;padding:22px;margin-bottom:26px;display:grid;gap:14px;border-left:8px solid var(--red)}
+.hero h2{margin:0;font-size:1.05rem;font-weight:600;color:var(--brass)}
+.hero .when{font-size:clamp(1.5rem,5vw,2.3rem);font-weight:800;line-height:1.15}
+.hero .where{color:#b8cdd1}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.1);border-radius:99px;padding:4px 12px 4px 4px;font-size:.92rem}
+.view{display:none}.view.on{display:block}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.bar h2{margin:0;font-size:1.5rem}
+.btn{background:var(--red);color:#fff;border:0;border-radius:10px;padding:9px 16px;font-weight:600}
+.btn.alt{background:none;color:var(--ink);border:1.5px solid var(--line)}
+.btn.sm{padding:5px 12px;font-size:.88rem}
+.av{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;object-fit:cover;color:#fff;font-weight:800;flex:none}
+.dot{display:inline-block;width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.7);box-shadow:0 0 0 1px rgba(0,0,0,.35);vertical-align:-2px;margin-right:6px}
+.tl-wrap{position:relative}
+.track{position:relative;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding:10px calc(50% - 70px) 14px;scrollbar-width:thin}
+.node{flex:none;width:140px;scroll-snap-align:center;text-align:center;background:none;border:0;position:relative;padding:0 0 4px;opacity:.55;transition:opacity .2s}
+.node::before{content:"";position:absolute;top:34px;left:0;right:0;height:4px;background:var(--line)}
+.node.on{opacity:1}
+.tok{position:relative;display:flex;align-items:center;justify-content:center;width:46px;height:46px;margin:12px auto 8px;border-radius:50%;font-size:1.15rem;color:#fff;font-weight:800;box-shadow:inset 0 -5px 0 rgba(0,0,0,.25),0 3px 0 rgba(0,0,0,.2);transition:transform .2s}
+.node.on .tok{transform:scale(1.3)}
+.tok.fut{background:var(--surf);color:var(--red);border:3px dashed var(--red);box-shadow:none}
+.tok.nul{background:var(--surf);color:var(--mut);border:3px dotted var(--mut);box-shadow:none}
+.node b{display:block;font-size:.95rem}
+.node small{color:var(--mut)}
+.arrow{position:absolute;top:22px;z-index:2;width:38px;height:38px;border-radius:50%;border:1.5px solid var(--line);background:var(--surf);font-size:1.1rem}
+.arrow.l{left:0}.arrow.r{right:0}
+.card{background:var(--surf);border:1.5px solid var(--line);border-radius:16px;padding:20px}
+.focus{margin-top:6px;display:grid;gap:10px}
+.focus .big{font-size:clamp(1.6rem,5vw,2.4rem);font-weight:800;line-height:1.1}
+.focus .row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.focus .tag{display:inline-block;font-weight:600;color:var(--red)}
+.muted{color:var(--mut)}
+.hall{display:grid;gap:10px}
+.hrow{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;background:var(--surf);border:1.5px solid var(--line);border-radius:14px;padding:12px 16px}
+.hrow .n{font-weight:800;font-size:1.1rem}
+.rank{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.rank .chip{background:var(--sea);color:var(--on-sea);padding-right:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
+.pc{display:grid;gap:12px;justify-items:start}
+.pc h3{margin:0;font-size:1.3rem}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%}
+.stats div{background:var(--bg);border-radius:10px;padding:8px;text-align:center}
+.stats b{display:block;font-size:1.4rem;line-height:1.1}
+.stats span{font-size:.8rem;color:var(--mut)}
+.bl{display:grid;grid-template-columns:84px 1fr 78px;gap:10px;align-items:center;margin-top:10px}.bn{font-weight:600}.bt{height:20px;background:var(--bg);border-radius:10px;overflow:hidden}.bt i{display:block;height:100%;border-radius:10px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.35)}.bv{text-align:right;font-weight:600}
+#addG,.focus .acts,.hero .btn,#pl .btn{display:none}
+.empty{padding:30px;text-align:center;color:var(--mut);border:2px dashed var(--line);border-radius:14px}
+dialog{border:0;border-radius:18px;padding:0;width:min(520px,94vw);background:var(--surf);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+dialog::backdrop{background:rgba(6,18,26,.65)}
+.dl{padding:22px;display:grid;gap:12px}
+.dl h3{margin:0;font-size:1.4rem}
+.dl label.f{display:grid;gap:4px;font-weight:600;font-size:.92rem}
+.dl input[type=text],.dl input[type=datetime-local],.dl select,.dl textarea{width:100%;padding:9px 11px;border:1.5px solid var(--line);border-radius:9px;background:var(--bg)}
+.prow{display:grid;grid-template-columns:auto auto 1fr auto;gap:10px;align-items:center;padding:5px 0}
+.prow select{width:auto!important}
+.acts{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.err{color:var(--red);font-weight:600;min-height:1.2em}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<div class="brand">
+<svg width="46" height="46" viewBox="0 0 46 46" aria-hidden="true"><rect x="4" y="4" width="38" height="38" rx="9" fill="#c8372d" transform="rotate(-8 23 23)"/><g fill="#fff" transform="rotate(-8 23 23)"><circle cx="14" cy="14" r="3.2"/><circle cx="23" cy="23" r="3.2"/><circle cx="32" cy="32" r="3.2"/><circle cx="32" cy="14" r="3.2"/><circle cx="14" cy="32" r="3.2"/></g></svg>
+<div><h1>Risiko</h1><p>Il libro mastro delle nostre guerre di salotto</p></div></div>
+<nav class="tabs"><button data-t="tl" class="on">Timeline</button><button data-t="hall">Albo d’oro</button><button data-t="pl" hidden>Giocatori</button></nav>
+</div></header>
+<main>
+<section id="hero"></section>
+<section id="tl" class="view on">
+<div class="bar"><h2>Le battaglie</h2><button class="btn" id="addG">Nuova partita</button></div>
+<div class="tl-wrap"><button class="arrow l" id="pv" aria-label="Partita precedente">‹</button><button class="arrow r" id="nx" aria-label="Partita successiva">›</button><div class="track" id="track"></div></div>
+<div id="focus" class="card focus" aria-live="polite"></div>
+</section>
+<section id="hall" class="view"></section>
+<section id="pl" class="view"></section>
+</main>
+<dialog id="dlg"></dialog>
+<script>
+const K='risiko-v2';
+const COL={rosso:'#c0392b',blu:'#2c5fa8',verde:'#2e7d4f',giallo:'#d9a81c',nero:'#2b2b2b',viola:'#7b4a9c'};
+const $=s=>document.querySelector(s);
+const esc=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+const pad=n=>String(n).padStart(2,'0');
+const loc=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+function seed(){
+  const d=(days,h,m=0)=>{const x=new Date();x.setDate(x.getDate()+days);x.setHours(h,m,0,0);return loc(x)};
+  let n=0;const g=(y,m,dd,w,c)=>({id:'g'+(++n),date:`${y}-${m}-${dd}T21:00`,place:'',players:[w],colors:{[w]:c},winner:w});
+  return {players:['Principe','Pe','Susta','Tasc','Roc'].map(x=>({id:x.toLowerCase(),name:x,desc:'',photo:''})),
+  games:[g(2018,12,20,'principe','viola'),g(2018,12,24,'pe','giallo'),g(2018,12,31,'pe','giallo'),g(2019,12,19,'susta','rosso'),g(2019,12,24,'tasc','verde'),
+    g(2019,12,30,'principe','viola'),g(2022,12,24,'pe','giallo'),g(2023,12,25,'roc','nero'),g(2025,12,25,'tasc','verde')]};
+}
+let S=seed();
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+const P=id=>S.players.find(p=>p.id===id);
+const sorted=()=>S.games.slice().sort((a,b)=>a.date.localeCompare(b.date));
+const done=g=>!!g.winner&&!!P(g.winner);
+const isFut=g=>!done(g)&&new Date(g.date)>=new Date();
+const fd=d=>new Date(d).toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const fs=d=>new Date(d).toLocaleDateString('it-IT',{day:'numeric',month:'short',year:'numeric'});
+const ft=d=>new Date(d).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+const dot=c=>`<i class="dot" style="background:${COL[c]||'#888'}"></i>`;
+const hue=n=>`hsl(${[...n].reduce((a,c)=>a+c.charCodeAt(0),0)%360} 45% 38%)`;
+function av(p,sz=40){if(!p)return'';const st=`width:${sz}px;height:${sz}px;font-size:${Math.round(sz*.42)}px`;
+  return p.photo?`<img class="av" style="${st}" src="${p.photo}" alt="">`:`<span class="av" style="${st};background:${hue(p.name)}">${esc(p.name.slice(0,1).toUpperCase())}</span>`}
+function left(d){const ms=new Date(d)-Date.now();if(ms<0)return'è già ora';const n=Math.ceil(ms/864e5);const same=new Date(d).toDateString()===new Date().toDateString();
+  return same?'oggi':n<=1?'domani':`tra ${n} giorni`}
+const names=g=>g.players.map(P).filter(Boolean).map(p=>`<span class="chip">${av(p,28)}${esc(p.name)}</span>`).join('');
+
+function stats(p){const gs=S.games.filter(g=>done(g)&&g.players.includes(p.id));const cnt={};
+  gs.forEach(g=>{const c=g.colors[p.id];if(c)cnt[c]=(cnt[c]||0)+1});
+  const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0];
+  return{played:gs.length,wins:gs.filter(g=>g.winner===p.id).length,color:top?top[0]:null}}
+
+function renderHero(){
+  const n=sorted().find(isFut);
+  $('#hero').innerHTML=n?`<div class="hero"><h2>Prossima battaglia, ${left(n.date)}</h2>
+    <div class="when">${esc(fd(n.date))}, ore ${ft(n.date)}</div>
+    <div class="where">Si gioca: ${esc(n.place)}</div><div class="chips">${names(n)}</div></div>`
+  :`<div class="hero"><h2>Nessuna battaglia in programma</h2><div class="when">Troppa pace fa male al mondo.</div>
+    <div><button class="btn" onclick="openGame()">Fissa una partita</button></div></div>`;
+}
+
+let focusId=null,track;
+function renderTimeline(){
+  const gs=sorted();track=$('#track');
+  if(!gs.length){track.innerHTML='';$('#focus').innerHTML='<div class="empty">Nessuna partita in archivio. Aggiungi la prima e che inizi la guerra.</div>';return}
+  track.innerHTML=gs.map(g=>{const w=P(g.winner);
+    const t=done(g)?`<span class="tok" style="background:${COL[g.colors[g.winner]]||'#888'}">${w?'★':''}</span>`
+      :isFut(g)?`<span class="tok fut">?</span>`:`<span class="tok nul">!</span>`;
+    return`<button class="node" data-id="${g.id}">${t}<b>${esc(fs(g.date))}</b><small>${g.place?esc(g.place):'&nbsp;'}</small></button>`}).join('');
+  track.querySelectorAll('.node').forEach(b=>b.onclick=()=>goTo(b.dataset.id));
+  const start=gs.some(g=>g.id===focusId)?focusId:(gs.find(isFut)||gs[gs.length-1]).id;
+  focusId=null;requestAnimationFrame(()=>{goTo(start,true);setFocus(start)});
+}
+function goTo(id,instant){const n=track.querySelector(`[data-id="${id}"]`);if(!n)return;
+  track.scrollTo({left:n.offsetLeft+n.offsetWidth/2-track.clientWidth/2,behavior:instant?'auto':'smooth'})}
+function onScroll(){const c=track.scrollLeft+track.clientWidth/2;let best=null,bd=1e9;
+  track.querySelectorAll('.node').forEach(n=>{const d=Math.abs(n.offsetLeft+n.offsetWidth/2-c);if(d<bd){bd=d;best=n}});
+  if(best&&best.dataset.id!==focusId)setFocus(best.dataset.id)}
+let tick=0;
+function setFocus(id){focusId=id;const g=S.games.find(x=>x.id===id);if(!g)return;
+  track.querySelectorAll('.node').forEach(n=>n.classList.toggle('on',n.dataset.id===id));
+  let body;
+  if(done(g)){const w=P(g.winner);body=`<span class="tag">Vincitore</span><div class="row">${av(w,64)}<div class="big">${esc(w.name)}</div></div>
+    <div>${dot(g.colors[g.winner])}Armate ${esc(g.colors[g.winner]||'?')}</div>`}
+  else if(isFut(g)){body=`<span class="tag">Reminder, ${left(g.date)}</span><div class="big">${esc(fd(g.date))}, ore ${ft(g.date)}</div>
+    <div>Si gioca: ${esc(g.place)}</div>`}
+  else body=`<span class="tag">Esito da registrare</span><div class="big">Chi ha vinto il ${esc(fs(g.date))}?</div><div class="muted">La partita è passata ma nessuno ha messo il nome sul trofeo.</div>`;
+  $('#focus').innerHTML=`${body}<div class="muted">${done(g)?esc(fd(g.date))+(g.place?', '+esc(g.place):''):''}</div><div class="chips">${names(g)}</div>
+  <div class="acts" style="justify-content:flex-start"><button class="btn alt sm" onclick="openGame('${g.id}')">Modifica</button>
+  <button class="btn alt sm" id="delG" onclick="del2(this,()=>{S.games=S.games.filter(x=>x.id!=='${g.id}');save();render()})">Elimina</button></div>`}
+function del2(b,fn){if(b.dataset.s){fn();return}b.dataset.s=1;b.textContent='Sicuro? Clicca ancora';setTimeout(()=>{b.dataset.s='';b.textContent='Elimina'},3000)}
+
+function renderHall(){
+  const gs=sorted().filter(done).reverse();
+  const wins=S.players.map(p=>({p,w:stats(p).wins})).filter(x=>x.w>0).sort((a,b)=>b.w-a.w);
+  $('#hall').innerHTML=`<div class="bar"><h2>Albo d’oro</h2></div>`+(gs.length?
+   `<div class="rank">${wins.map((x,i)=>`<span class="chip">${av(x.p,28)}${esc(x.p.name)}: ${x.w} ${x.w===1?'vittoria':'vittorie'}</span>`).join('')}</div>
+   <div class="card" style="margin-bottom:18px"><b>Percentuale di partite vinte</b>${S.players.map(p=>({p,w:stats(p).wins,c:stats(p).color})).sort((a,b)=>b.w-a.w).map(x=>{const pc=Math.round(x.w/gs.length*100);return`<div class="bl"><span class="bn">${esc(x.p.name)}</span><div class="bt"><i style="width:${pc}%;background:${COL[x.c]||hue(x.p.name)}"></i></div><span class="bv">${pc}% (${x.w})</span></div>`}).join('')}<div class="muted" style="margin-top:10px;font-size:.88rem">Calcolata sul totale di ${gs.length} partite registrate; il colore della barra è quello più usato da ciascuno.</div></div>
+   <div class="hall">${gs.map(g=>{const w=P(g.winner);return`<div class="hrow">${av(w,48)}<div><div class="n">${esc(w.name)}</div><div class="muted">${esc(fs(g.date))}${g.place?', '+esc(g.place):''}</div></div><div>${dot(g.colors[g.winner])}${esc(g.colors[g.winner]||'')}</div></div>`}).join('')}</div>`
+   :`<div class="empty">Ancora nessun vincitore. L’albo d’oro aspetta il suo primo conquistatore.</div>`);
+}
+function renderPlayers(){
+  $('#pl').innerHTML=`<div class="bar"><h2>Giocatori</h2><button class="btn" onclick="openPlayer()">Nuovo giocatore</button></div>`+
+  (S.players.length?`<div class="grid">${S.players.map(p=>{const s=stats(p);return`<div class="card pc">
+   <div class="row" style="display:flex;gap:12px;align-items:center">${av(p,72)}<h3>${esc(p.name)}</h3></div>
+   <div>${esc(p.desc)||'<span class="muted">Nessuna descrizione.</span>'}</div>
+   <div class="stats"><div><b>${s.played}</b><span>giocate</span></div><div><b>${s.wins}</b><span>vinte</span></div><div><b>${s.played?Math.round(s.wins/s.played*100)+'%':'–'}</b><span>vittorie</span></div></div>
+   <div>${s.color?dot(s.color)+'Armate preferite: '+esc(s.color):'<span class="muted">Colore preferito: ancora nessuno</span>'}</div>
+   <button class="btn alt sm" onclick="openPlayer('${p.id}')">Modifica</button></div>`}).join('')}</div>`
+  :`<div class="empty">Nessun giocatore. Chiama a raccolta i tuoi generali.</div>`);
+}
+function render(){renderHero();renderTimeline();renderHall();renderPlayers()}
+
+const dlg=$('#dlg');
+function openGame(id){
+  if(!S.players.length){openPlayer();return}
+  const t=new Date();t.setDate(t.getDate()+1);t.setHours(21,0,0,0);
+  const g=id?S.games.find(x=>x.id===id):{date:loc(t),place:'',players:[],colors:{},winner:null};
+  const free=c=>Object.keys(COL).filter(k=>!Object.values(g.colors).includes(k))[0]||'rosso';
+  dlg.innerHTML=`<div class="dl"><h3>${id?'Modifica partita':'Nuova partita'}</h3>
+  <label class="f">Data e ora<input type="datetime-local" id="gd" value="${g.date}"></label>
+  <label class="f">Luogo<input type="text" id="gp" value="${esc(g.place)}" placeholder="Casa di chi?"></label>
+  <div><b>Partecipanti e colore delle armate</b>${S.players.map((p,i)=>{const on=g.players.includes(p.id);const c=g.colors[p.id]||Object.keys(COL)[i%6];
+   return`<div class="prow"><input type="checkbox" value="${p.id}" ${on?'checked':''} aria-label="${esc(p.name)}">${av(p,28)}<span>${esc(p.name)}</span>
+   <select data-c="${p.id}">${Object.keys(COL).map(k=>`<option ${k===c?'selected':''}>${k}</option>`).join('')}</select></div>`}).join('')}</div>
+  <label class="f">Vincitore<select id="gw"></select></label><div class="err" id="er"></div>
+  <div class="acts"><button class="btn alt" id="cx">Annulla</button><button class="btn" id="ok">Salva partita</button></div></div>`;
+  const fillW=()=>{const cur=$('#gw').value||g.winner||'';const ids=[...dlg.querySelectorAll('.prow input:checked')].map(i=>i.value);
+    $('#gw').innerHTML=`<option value="">Ancora da giocare</option>`+ids.map(i=>`<option value="${i}" ${i===cur?'selected':''}>${esc(P(i).name)}</option>`).join('')};
+  fillW();dlg.querySelectorAll('.prow input').forEach(i=>i.onchange=fillW);
+  $('#cx').onclick=()=>dlg.close();
+  $('#ok').onclick=()=>{const ids=[...dlg.querySelectorAll('.prow input:checked')].map(i=>i.value);
+    const d=$('#gd').value,pl=$('#gp').value.trim();
+    if(!d||(!pl&&!$('#gw').value))return $('#er').textContent='Servono la data e, per le partite future, il luogo.';
+    if(ids.length<2)return $('#er').textContent='Per una guerra servono almeno due giocatori.';
+    const cols={};ids.forEach(i=>cols[i]=dlg.querySelector(`[data-c="${i}"]`).value);
+    if(new Set(Object.values(cols)).size<ids.length)return $('#er').textContent='Due giocatori hanno lo stesso colore di armate.';
+    const o={id:g.id||uid(),date:d,place:pl,players:ids,colors:cols,winner:$('#gw').value||null};
+    if(id)S.games=S.games.map(x=>x.id===id?o:x);else S.games.push(o);
+    focusId=o.id;save();dlg.close();render()};
+  dlg.showModal();
+}
+function openPlayer(id){
+  const p=id?P(id):{name:'',desc:'',photo:''};let photo=p.photo;
+  dlg.innerHTML=`<div class="dl"><h3>${id?'Modifica giocatore':'Nuovo giocatore'}</h3>
+  <div style="display:flex;gap:14px;align-items:center"><span id="pv2">${av(p.name?p:{name:'?',photo:''},64)}</span>
+  <label class="f">Foto<input type="file" id="ph" accept="image/*"></label></div>
+  <label class="f">Nome<input type="text" id="pn" value="${esc(p.name)}"></label>
+  <label class="f">Breve descrizione<textarea id="pd" rows="3" maxlength="160">${esc(p.desc)}</textarea></label><div class="err" id="er"></div>
+  <div class="acts">${id?'<button class="btn alt" id="rm">Elimina</button>':''}<button class="btn alt" id="cx">Annulla</button><button class="btn" id="ok">Salva giocatore</button></div></div>`;
+  $('#ph').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{
+    const s=Math.min(im.width,im.height),c=document.createElement('canvas');c.width=c.height=160;
+    c.getContext('2d').drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,160,160);photo=c.toDataURL('image/jpeg',.8);
+    $('#pv2').innerHTML=av({name:'?',photo},64)};im.src=r.result};r.readAsDataURL(f)};
+  $('#cx').onclick=()=>dlg.close();
+  if(id)$('#rm').onclick=function(){del2(this,()=>{S.players=S.players.filter(x=>x.id!==id);
+    S.games.forEach(g=>{g.players=g.players.filter(x=>x!==id);delete g.colors[id];if(g.winner===id)g.winner=null});save();dlg.close();render()})};
+  $('#ok').onclick=()=>{const n=$('#pn').value.trim();if(!n)return $('#er').textContent='Ogni generale ha un nome.';
+    const o={id:id||uid(),name:n,desc:$('#pd').value.trim(),photo};
+    if(id)S.players=S.players.map(x=>x.id===id?o:x);else S.players.push(o);save();dlg.close();render()};
+  dlg.showModal();
+}
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id===b.dataset.t));
+  if(b.dataset.t==='tl'&&focusId)requestAnimationFrame(()=>goTo(focusId,true))});
+$('#addG').onclick=()=>openGame();
+const step=d=>{const ids=sorted().map(g=>g.id),i=ids.indexOf(focusId);const j=Math.max(0,Math.min(ids.length-1,i+d));if(ids[j])goTo(ids[j])};
+$('#pv').onclick=()=>step(-1);$('#nx').onclick=()=>step(1);
+$('#track').addEventListener('scroll',()=>{cancelAnimationFrame(tick);tick=requestAnimationFrame(onScroll)});
+render();
+</script>
+</body>
+</html>
